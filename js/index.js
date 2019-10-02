@@ -11,7 +11,11 @@ const COLORS = {
 
 const RemoteControlTransmitter = new Transmitter({transport: RemoteControlTransport});
 const RemoteControlTransport = new Transport({url: websocketUrl})
-console.log(RemoteControlTransport)
+
+RemoteControlTransport.receive = (event) => {
+    console.log('got event from socket', event)
+}
+
 class Spinner extends Component {
     style() {
         return {
