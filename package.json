@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "install": "rm -rf ./js/etherealdata && git clone https://github.com/etherealdata/etherealjs ./js/etherealjs && npm install http-server -g",
+    "install": "rm -rf ./js/etherealjs && git clone https://github.com/etherealdata/etherealjs ./js/etherealjs && npm install http-server pm2 -g",
+    "persist": "pm2 start http-server -- -p 80 && pm2 save",
     "start": "http-server"
   },
   "author": "",
