@@ -9,7 +9,7 @@ const COLORS = {
     WHITE: '#fff'
 };
 
-const RemoteControlTransmitter = new Transmitter({});
+const RemoteControlTransmitter = new Transmitter({transport: RemoteControlTransport});
 const RemoteControlTransport = new Transport({url: websocketUrl})
 console.log(RemoteControlTransport)
 class Spinner extends Component {

@@ -3,6 +3,9 @@ import Satellite from '../js/etherealjs/src/satellite.js';
 export default class Transmitter extends Satellite {
     constructor(store) {
         super(store);
+        if(!store.transport) {
+            throw new Error('transmitter started with no transport')
+        }
         this.store = { ...store, signalMap: {} };
         this.buttonMap = {
             ArrowUp: 'U',
@@ -49,8 +52,7 @@ export default class Transmitter extends Satellite {
     }
     transmit(event) {
         try {
-            const stringified = JSON.stringify(event);
-            console.log('going to transmit', stringified);
+            this.store.transport.send(event)
         } catch (error) {
             throw new Error(error);
         }
