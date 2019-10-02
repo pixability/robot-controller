@@ -8,3 +8,11 @@
 4. `npm run start`
 5. Visit ip address that gets echoed in the terminal (default `localhost:8080`)
 6. attack ben :)
+
+## How to use
+A - Attack (activates vacuum, for now)
+
+Up Arrow - Forward
+Right Arrow - Right
+Left Arrow - Left
+Down Arrow - Back
