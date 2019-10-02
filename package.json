@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "install": "rm -rf ./js/etherealdata && git clone https://github.com/etherealdata/etherealjs ./js/etherealjs && npm install http-server -g",
+    "start": "http-server"
   },
   "author": "",
   "license": "ISC"
