@@ -70,6 +70,10 @@ class Spinner extends Component {
 class Pip extends Component {
     constructor(config) {
         super(config);
+        if(config.attributes['hangouts-url']){
+            console.log('woa')
+            // window.open(config.attributes['hangouts-url'].value, '_blank')
+        }
     }
     drag(event) {
         console.log('evewnt', event);
@@ -107,8 +111,7 @@ class Pip extends Component {
     draw() {
         return `
             <div>
-                <div class="main-video">Main Video</div>
-                <div class="pip-video" draggable="true" e drag="drag">Pip Video</div>
+                     <div class="main-video">Main Video</div><div class="pip-video" draggable="true" e drag="drag">Pip Video</div>
             </div>
         `;
     }
