@@ -3,6 +3,7 @@ import Component from '../js/etherealjs/src/component.js';
 import { websocketUrl } from './config.js';
 import Transport from './transport.js';
 import Transmitter from './transmitter.js';
+import Static from './etherealjs/src/static.js';
 const COLORS = {
     GRANITE: '#383A4A',
     INSPIRE: '#FF752d',
@@ -66,17 +67,26 @@ class Spinner extends Component {
         return `<div></div>`;
     }
 }
-
+function popupWindow(url, title, win, w, h) {
+    const y =  win.top.screenY + 50;
+    // const x = win.top.outerWidth / 2 + win.top.screenX - ( w / 2);
+    const x = win.top.screenX - ( w );
+    return win.open(url, title, 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, alwaysOnTop, width='+w+', height='+h+', top='+y+', left='+x);
+}
 class Pip extends Component {
     constructor(config) {
         super(config);
         if(config.attributes['hangouts-url']){
             console.log('woa')
-            // window.open(config.attributes['hangouts-url'].value, '_blank')
+            const domElement = Static.getDOMInstance(this.pid)
+            const {offsetWidth, offsetHeight} = domElement
+            this.hangoutsChat = popupWindow(config.attributes['hangouts-url'].value, 'hangoutWindow', window, offsetWidth / 2, offsetHeight - 40)
         }
+        window.addEventListener('beforeunload', () => {
+            this.hangoutsChat.close()
+        })
     }
     drag(event) {
-        console.log('evewnt', event);
         const top = event.offsetY;
         const left = event.offsetX;
         if (top !== 0 && left !== 0) {
@@ -111,7 +121,8 @@ class Pip extends Component {
     draw() {
         return `
             <div>
-                     <div class="main-video">Main Video</div><div class="pip-video" draggable="true" e drag="drag">Pip Video</div>
+                ${this.attributes['hangouts-url'] ? ``: `<div class="main-video">Main Video</div><div class="pip-video" draggable="true" e drag="drag">Pip Video</div>`}
+
             </div>
         `;
     }
