@@ -28,7 +28,7 @@ export default class Transmitter extends Satellite {
                     }
                 });
                 this.transmit({
-                    module: 'receiver',
+                    module: 'controller',
                     operation: 'press',
                     payload: { key: this.buttonMap[code] }
                 });
@@ -43,7 +43,7 @@ export default class Transmitter extends Satellite {
                 delete this.store.signalMap[this.buttonMap[code]];
                 this.setStore(this.store);
                 this.transmit({
-                    module: 'receiver',
+                    module: 'controller',
                     operation: 'depress',
                     payload: { key: this.buttonMap[code] }
                 });
