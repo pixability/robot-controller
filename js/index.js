@@ -1,20 +1,22 @@
 import Runtime from '../js/etherealjs/src/runtime.js';
 import Component from '../js/etherealjs/src/component.js';
-import {websocketUrl} from './config.js'
-import Transport from './transport.js'
-import Transmitter from './transmitter.js'
+import { websocketUrl } from './config.js';
+import Transport from './transport.js';
+import Transmitter from './transmitter.js';
 const COLORS = {
     GRANITE: '#383A4A',
     INSPIRE: '#FF752d',
-    WHITE: '#fff'
+    WHITE: '#fff',
 };
 
-const RemoteControlTransmitter = new Transmitter({transport: RemoteControlTransport});
-const RemoteControlTransport = new Transport({url: websocketUrl})
+const RemoteControlTransport = new Transport({ url: websocketUrl });
+const RemoteControlTransmitter = new Transmitter({
+    transport: RemoteControlTransport,
+});
 
-RemoteControlTransport.receive = (event) => {
-    console.log('got event from socket', event)
-}
+RemoteControlTransport.receive = event => {
+    console.log('got event from socket', event);
+};
 
 class Spinner extends Component {
     style() {
@@ -32,7 +34,7 @@ class Spinner extends Component {
                 '-ms-transform': 'translateZ(0)',
                 transform: 'translateZ(0)',
                 '-webkit-animation-delay': '-0.16s',
-                'animation-delay': '-0.16s'
+                'animation-delay': '-0.16s',
             },
             ':before': {
                 background: '#ffffff',
@@ -45,7 +47,7 @@ class Spinner extends Component {
                 content: "''",
                 left: '-1.5em',
                 '-webkit-animation-delay': '-0.32s',
-                'animation-delay': '-0.32s'
+                'animation-delay': '-0.32s',
             },
             ':after': {
                 background: '#ffffff',
@@ -56,8 +58,8 @@ class Spinner extends Component {
                 position: 'absolute',
                 top: '0',
                 content: "''",
-                left: '1.5em'
-            }
+                left: '1.5em',
+            },
         };
     }
     draw() {
@@ -89,7 +91,7 @@ class Pip extends Component {
                 '.main-video': {
                     width: '100%',
                     height: '100%',
-                    background: 'rgba(0,0,0,.5)'
+                    background: 'rgba(0,0,0,.5)',
                 },
                 '.pip-video': {
                     width: '20%',
@@ -97,9 +99,9 @@ class Pip extends Component {
                     position: 'absolute',
                     top: `${this.store.top}px` || '20px',
                     left: `${this.store.left}px` || '20px',
-                    background: 'rgba(255,255,255,.3)'
-                }
-            }
+                    background: 'rgba(255,255,255,.3)',
+                },
+            },
         };
     }
     draw() {
@@ -131,7 +133,7 @@ class Controller extends Component {
                     height: '12rem',
                     display: 'flex',
                     'flex-direction': 'column',
-                    'justify-content': 'space-between'
+                    'justify-content': 'space-between',
                 },
                 '.main-button button': {
                     'font-size': '1.5rem',
@@ -140,10 +142,10 @@ class Controller extends Component {
                     height: '8rem',
                     width: '8rem',
                     'border-radius': '16rem',
-                    opacity: '.5'
+                    opacity: '.5',
                 },
                 '.main-button.A button': {
-                    opacity: '1'
+                    opacity: '1',
                 },
                 '.button': {
                     opacity: '0.3',
@@ -153,36 +155,36 @@ class Controller extends Component {
                     display: 'flex',
                     'justify-content': 'center',
                     'align-items': 'center',
-                    background: COLORS.INSPIRE
+                    background: COLORS.INSPIRE,
                 },
                 '.space-between-row': {
                     display: 'flex',
                     'flex-direction': 'row',
-                    'justify-content': 'space-between'
+                    'justify-content': 'space-between',
                 },
                 '.center-row': {
                     display: 'flex',
                     'flex-direction': 'row',
                     flex: 1,
-                    'justify-content': 'center'
+                    'justify-content': 'center',
                 },
                 '.button i': {
                     'font-size': '3rem',
-                    color: COLORS.WHITE
+                    color: COLORS.WHITE,
                 },
                 '.U .up': {
-                    opacity: '1'
+                    opacity: '1',
                 },
                 '.D .down': {
-                    opacity: '1'
+                    opacity: '1',
                 },
                 '.R .right': {
-                    opacity: '1'
+                    opacity: '1',
                 },
                 '.L .left': {
-                    opacity: '1'
-                }
-            }
+                    opacity: '1',
+                },
+            },
         };
     }
     handleKeydown(event) {
@@ -198,7 +200,7 @@ class Controller extends Component {
             return `<div>loading</div>`;
         }
         const {
-            store: { signalMap: signals }
+            store: { signalMap: signals },
         } = this.transmitter;
         return `
             <div>
@@ -243,11 +245,11 @@ new Runtime({
     properties: {
         selected: 'Welcome',
         values: {},
-        active: 'Register'
+        active: 'Register',
     },
     library: {
         Pip: Pip,
-        Controller: Controller
+        Controller: Controller,
     },
     styles: () => {
         return {
@@ -257,10 +259,10 @@ new Runtime({
                 padding: '0',
                 'box-sizing': 'border-box',
                 'font-weight': '200',
-                color: COLORS.GRANITE
+                color: COLORS.GRANITE,
             },
             html: {
-                height: '100%'
+                height: '100%',
             },
             body: {
                 height: '100%',
@@ -269,38 +271,38 @@ new Runtime({
                 display: 'flex',
                 'justify-content': 'flex-start',
                 'align-items': 'center',
-                'flex-direction': 'column'
+                'flex-direction': 'column',
             },
             a: {
                 color: '#0e689b',
                 'text-decoration': 'underline',
-                cursor: 'pointer'
+                cursor: 'pointer',
             },
             '.container': {
                 width: '1350px',
-                margin: '0 auto'
+                margin: '0 auto',
             },
 
             '@-webkit-keyframes load1': {
                 '0%,80%,100%': {
                     'box-shadow': '0 0',
-                    height: '4em'
+                    height: '4em',
                 },
                 '40%': {
                     'box-shadow': '0 -2em',
-                    height: '5em'
-                }
+                    height: '5em',
+                },
             },
             '@keyframes load1': {
                 '{0%,80%,100%': {
                     'box-shadow': '0 0',
-                    height: '4em}'
+                    height: '4em}',
                 },
                 '{40%': {
                     'box-shadow': '0 -2em',
-                    height: '5em}'
-                }
-            }
+                    height: '5em}',
+                },
+            },
         };
-    }
+    },
 });
