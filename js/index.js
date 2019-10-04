@@ -61,7 +61,7 @@ class Stats extends Component {
             '': {
                 'flex-direction': 'row',
                 'height': '40%',
-                'width': '80%',
+                'width': '100%',
                 'display': 'flex',
                 'justify-content': 'space-around',
                 'align-items': 'center',
