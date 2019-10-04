@@ -1,78 +1,119 @@
 import Runtime from '../js/etherealjs/src/runtime.js';
 import Component from '../js/etherealjs/src/component.js';
-import { websocketUrl } from './config.js';
-import Transport from './transport.js';
 import Transmitter from './transmitter.js';
 import Static from './etherealjs/src/static.js';
+import { popupWindow } from './utils.js';
 const COLORS = {
     GRANITE: '#383A4A',
     INSPIRE: '#FF752d',
     WHITE: '#fff',
+    GREEN: '#24c742',
+    BLUE: '#24b9c7'
 };
 
-const RemoteControlTransport = new Transport({ url: websocketUrl });
-const RemoteControlTransmitter = new Transmitter({
-    transport: RemoteControlTransport,
-});
+const RemoteControlTransmitter = new Transmitter();
 
-RemoteControlTransport.receive = event => {
-    console.log('got event from socket', event);
-};
-
-class Spinner extends Component {
+class ControlPad extends Component {
+    constructor(config) {
+        super(config)
+        if(!config.attributes['websocket-url']) {
+            throw new Error('missing websocket-url')
+        }
+        RemoteControlTransmitter.start(config.attributes['websocket-url'].value)
+    }
     style() {
         return {
             '': {
-                background: '#ffffff',
-                '-webkit-animation': 'load1 1s infinite ease-in-out',
-                animation: 'load1 1s infinite ease-in-out',
-                width: '1em',
-                height: '4em',
-                color: '#ffffff',
-                'font-size': '11px',
-                position: 'relative',
-                '-webkit-transform': 'translateZ(0)',
-                '-ms-transform': 'translateZ(0)',
-                transform: 'translateZ(0)',
-                '-webkit-animation-delay': '-0.16s',
-                'animation-delay': '-0.16s',
-            },
-            ':before': {
-                background: '#ffffff',
-                '-webkit-animation': 'load1 1s infinite ease-in-out',
-                animation: 'load1 1s infinite ease-in-out',
-                width: '1em',
-                height: '4em',
-                position: 'absolute',
-                top: '0',
-                content: "''",
-                left: '-1.5em',
-                '-webkit-animation-delay': '-0.32s',
-                'animation-delay': '-0.32s',
-            },
-            ':after': {
-                background: '#ffffff',
-                '-webkit-animation': 'load1 1s infinite ease-in-out',
-                animation: 'load1 1s infinite ease-in-out',
-                width: '1em',
-                height: '4em',
-                position: 'absolute',
-                top: '0',
-                content: "''",
-                left: '1.5em',
-            },
-        };
+                height: '100%',
+                width: '100%',
+                'background-color': '#eee',
+                display: 'flex',
+                'justify-content': 'flex-start',
+                'align-items': 'center',
+                'flex-direction': 'column',
+            }
+        }
     }
     draw() {
-        return `<div></div>`;
+        if(!this.attributes['hangouts-url']) {
+            return `<div>Missing hangouts URL</div>`
+        }
+        return `
+            <div>
+                <Component
+                    hangouts-url="${this.attributes['hangouts-url'].value}"
+                    definition="Pip"
+                ></Component>
+                <Component definition="Stats"></Component>
+                <Component definition="Controller"></Component>
+            </div>
+        `
     }
 }
-function popupWindow(url, title, win, w, h) {
-    const y =  win.top.screenY + 50;
-    // const x = win.top.outerWidth / 2 + win.top.screenX - ( w / 2);
-    const x = win.top.screenX - ( w );
-    return win.open(url, title, 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, alwaysOnTop, width='+w+', height='+h+', top='+y+', left='+x);
+
+class Stats extends Component {
+    constructor(store) {
+        super(store)
+        RemoteControlTransmitter.subscribe(this, 'transmitter')
+    }
+    style() {
+        return {
+            '': {
+                'flex-direction': 'row',
+                'height': '40%',
+                'width': '80%',
+                'display': 'flex',
+                'justify-content': 'space-around',
+                'align-items': 'center',
+                background: '#fff',
+                '.circle' : {
+                    width: '12rem',
+                    height: '12rem',
+                    'border-radius': '24rem',
+                    background: 'red',
+                    display: 'flex',
+                    'flex-direction': 'column',
+                    'justify-content': 'center',
+                    'align-items': 'center'
+                },
+                '.circle.connections': {
+                    'background-color': COLORS.BLUE
+                },
+                '.circle.status h1': {
+                    'font-size': '1.5rem'
+                },
+                '.circle.status.connected': {
+                    'background': COLORS.GREEN
+                },
+                'p': {
+                    color: '#fff'
+                },
+                'h1': {
+                    color: '#fff'
+                }
+            }
+        }
+    }
+    draw() {
+        if(!this.transmitter) {
+            return `<div>loading</div>`
+        }
+        const isConnected = this.transmitter.store.connectionStatus === 'CONNECTED'
+        return `
+            <div>
+                <div class="circle connections">
+                    <h1>${this.transmitter.store.activeConnectionsCount}</h1>
+                    <p>Active Connections</p>
+                </div>
+                <div class="circle status ${isConnected ? 'connected': 'disconnected'}">
+                    <h1>${this.transmitter.store.connectionStatus}</h1>
+                    <p>Signal</p>
+                </div>
+            </div>
+        `
+    }
 }
+
 class Pip extends Component {
     constructor(config) {
         super(config);
@@ -100,8 +141,9 @@ class Pip extends Component {
                 height: '60%',
                 background: '#ccc',
                 'flex-direction': 'column',
-                position: 'relative',
+                position: 'absolute',
                 width: '100%',
+                opacity: '0',
                 '.main-video': {
                     width: '100%',
                     height: '100%',
@@ -122,7 +164,6 @@ class Pip extends Component {
         return `
             <div>
                 ${this.attributes['hangouts-url'] ? ``: `<div class="main-video">Main Video</div><div class="pip-video" draggable="true" e drag="drag">Pip Video</div>`}
-
             </div>
         `;
     }
@@ -201,14 +242,7 @@ class Controller extends Component {
             },
         };
     }
-    handleKeydown(event) {
-        const { code } = event;
 
-        console.log('keydown event', event);
-    }
-    handleKeyup(event) {
-        console.log('keyup event', event);
-    }
     draw() {
         if (!this.transmitter) {
             return `<div>loading</div>`;
@@ -262,8 +296,10 @@ new Runtime({
         active: 'Register',
     },
     library: {
-        Pip: Pip,
-        Controller: Controller,
+        Pip,
+        Controller,
+        Stats,
+        ControlPad
     },
     styles: () => {
         return {
